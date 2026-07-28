@@ -1,23 +1,21 @@
 import os
 import tempfile
+import streamlit as st
 from gtts import gTTS
-from playsound import playsound
 
 
 def text_to_speech(text, language="ar"):
     """
-    تحويل النص إلى صوت وتشغيله.
+    تحويل النص إلى صوت وتشغيله داخل Streamlit.
     """
 
     temp_file = None
 
     try:
-        # إنشاء ملف صوتي مؤقت
         with tempfile.NamedTemporaryFile(
             suffix=".mp3",
             delete=False
         ) as temp:
-
             temp_file = temp.name
 
         tts = gTTS(
@@ -28,25 +26,22 @@ def text_to_speech(text, language="ar"):
 
         tts.save(temp_file)
 
-        print("🔊 AI يتحدث...")
-
-        playsound(temp_file)
+        with open(temp_file, "rb") as audio:
+            st.audio(audio.read(), format="audio/mp3", autoplay=True)
 
         return True
 
     except Exception as e:
-        print(f"❌ خطأ في تحويل النص إلى صوت:\n{e}")
+        st.error(f"❌ خطأ في تحويل النص إلى صوت:\n{e}")
         return False
 
     finally:
-        try:
-            if temp_file and os.path.exists(temp_file):
-                os.remove(temp_file)
-        except:
-            pass
+        if temp_file and os.path.exists(temp_file):
+            os.remove(temp_file)
 
 
 if __name__ == "__main__":
-    text_to_speech(
-        "مرحباً بك في مشروع AI Career Mentor."
-    )
+    st.title("Text To Speech Test")
+
+    if st.button("تشغيل"):
+        text_to_speech("مرحباً بك في مشروع AI Career Mentor.")
