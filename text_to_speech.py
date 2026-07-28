@@ -1,0 +1,52 @@
+import os
+import tempfile
+from gtts import gTTS
+from playsound import playsound
+
+
+def text_to_speech(text, language="ar"):
+    """
+    تحويل النص إلى صوت وتشغيله.
+    """
+
+    temp_file = None
+
+    try:
+        # إنشاء ملف صوتي مؤقت
+        with tempfile.NamedTemporaryFile(
+            suffix=".mp3",
+            delete=False
+        ) as temp:
+
+            temp_file = temp.name
+
+        tts = gTTS(
+            text=text,
+            lang=language,
+            slow=False
+        )
+
+        tts.save(temp_file)
+
+        print("🔊 AI يتحدث...")
+
+        playsound(temp_file)
+
+        return True
+
+    except Exception as e:
+        print(f"❌ خطأ في تحويل النص إلى صوت:\n{e}")
+        return False
+
+    finally:
+        try:
+            if temp_file and os.path.exists(temp_file):
+                os.remove(temp_file)
+        except:
+            pass
+
+
+if __name__ == "__main__":
+    text_to_speech(
+        "مرحباً بك في مشروع AI Career Mentor."
+    )
