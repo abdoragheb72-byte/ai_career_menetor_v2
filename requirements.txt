@@ -5,5 +5,7 @@ pdfplumber
 python-docx
 SpeechRecognition
 gTTS
-pydantic
 playsound==1.3.0
+sounddevice
+soundfile
+pydantic
